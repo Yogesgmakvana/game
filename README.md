@@ -1,106 +1,80 @@
-from itertools import cycle
-from random import randrange
-from tkinter import Canvas, Tk, messagebox, font
+by Yogesh.Makvana
 
-canvas_width = 800
-canvas_height = 400
+# Egg Catcher Game
 
-root = Tk()
-root.title("Egg Catcher")
-c = Canvas(root, width=canvas_width, height=canvas_height, background="deep sky blue")
-c.create_rectangle(-5, canvas_height-100, canvas_width+5, canvas_height+5, fill="sea green", width=0)
-c.create_oval(-80, -80, 120, 120, fill='orange', width=0)
-c.pack()
+**Egg Catcher** is a simple arcade-style game written in Python using the `Tkinter` library for graphical interface. The player controls a catcher (represented as an arc) to catch falling eggs and score points. The game gets progressively harder as the player catches more eggs.
 
-color_cycle = cycle(["light blue", "light green", "light pink", "light yellow", "light cyan"])
-egg_width = 45
-egg_height = 55
-egg_score = 10
-egg_speed = 500
-egg_interval = 4000
-difficulty = 0.95
-catcher_color = "blue"
-catcher_width = 100
-catcher_height = 100
-catcher_startx = canvas_width / 2 - catcher_width / 2
-catcher_starty = canvas_height - catcher_height - 20
-catcher_startx2 = catcher_startx + catcher_width
-catcher_starty2 = catcher_starty + catcher_height
+## Features
+- Catch eggs falling from the top of the screen.
+- Catcher moves left and right using the arrow keys.
+- Eggs increase in speed and frequency as the score increases.
+- The player has 3 lives; losing all lives results in a Game Over.
+- Colorful eggs with random colors that fall at varying speeds.
+- Real-time score and remaining lives displayed on the screen.
 
-catcher = c.create_arc(catcher_startx, catcher_starty, catcher_startx2, catcher_starty2, start=200, extent=140, style="arc", outline=catcher_color, width=3)
-game_font = font.nametofont("TkFixedFont")
-game_font.config(size=18)
+## Requirements
 
+To run the game, you need to have Python installed on your machine with the following libraries:
 
-score = 0
-score_text = c.create_text(10, 10, anchor="nw", font=game_font, fill="darkblue", text="Score: "+ str(score))
+- **Tkinter** (for the graphical user interface)
 
-lives_remaining = 3
-lives_text = c.create_text(canvas_width-10, 10, anchor="ne", font=game_font, fill="darkblue", text="Lives: "+ str(lives_remaining))
+If you're using Python 3.x, Tkinter should be included by default. If it's not, you can install it using the following command:
 
-eggs = []
+```bash
+pip install tk
+```
 
-def create_egg():
-    x = randrange(10, 740)
-    y = 40
-    new_egg = c.create_oval(x, y, x+egg_width, y+egg_height, fill=next(color_cycle), width=0)
-    eggs.append(new_egg)
-    root.after(egg_interval, create_egg)
+## Installation
 
-def move_eggs():
-    for egg in eggs:
-        (eggx, eggy, eggx2, eggy2) = c.coords(egg)
-        c.move(egg, 0, 10)
-        if eggy2 > canvas_height:
-            egg_dropped(egg)
-    root.after(egg_speed, move_eggs)
+1. Clone or download this repository to your local machine.
 
-def egg_dropped(egg):
-    eggs.remove(egg)
-    c.delete(egg)
-    lose_a_life()
-    if lives_remaining == 0:
-        messagebox.showinfo("Game Over!", "Final Score: "+ str(score))
-        root.destroy()
+```bash
+git clone https://github.com/yourusername/egg-catcher-game.git
+```
 
-def lose_a_life():
-    global lives_remaining
-    lives_remaining -= 1
-    c.itemconfigure(lives_text, text="Lives: "+ str(lives_remaining))
+2. Navigate to the folder containing the `egg_catcher.py` file.
 
-def check_catch():
-    (catcherx, catchery, catcherx2, catchery2) = c.coords(catcher)
-    for egg in eggs:
-        (eggx, eggy, eggx2, eggy2) = c.coords(egg)
-        if catcherx < eggx and eggx2 < catcherx2 and catchery2 - eggy2 < 40:
-            eggs.remove(egg)
-            c.delete(egg)
-            increase_score(egg_score)
-    root.after(100, check_catch)
+3. Run the game script using Python:
 
-def increase_score(points):
-    global score, egg_speed, egg_interval
-    score += points
-    egg_speed = int(egg_speed * difficulty)
-    egg_interval = int(egg_interval * difficulty)
-    c.itemconfigure(score_text, text="Score: "+ str(score))
+```bash
+python egg_catcher.py
+```
 
-def move_left(event):
-    (x1, y1, x2, y2) = c.coords(catcher)
-    if x1 > 0:
-        c.move(catcher, -20, 0)
+## How to Play
 
-def move_right(event):
-    (x1, y1, x2, y2) = c.coords(catcher)
-    if x2 < canvas_width:
-        c.move(catcher, 20, 0)
+1. **Objective**: Catch as many eggs as possible to score points while avoiding dropping them. Each egg caught gives you points, and the game becomes progressively harder as the speed and frequency of falling eggs increase.
+   
+2. **Move the Catcher**: Use the **Left Arrow (←)** and **Right Arrow (→)** keys to move the catcher. The catcher moves within the bottom area of the screen.
 
-c.bind("<Left>", move_left)
-c.bind("<Right>", move_right)
-c.focus_set()
-root.after(1000, create_egg)
-root.after(1000, move_eggs)
-root.after(1000, check_catch)
-root.mainloop()
+3. **Eggs**: The eggs fall from the top of the screen, and you need to position the catcher beneath them to catch them. The more eggs you catch, the faster the eggs will fall.
 
-#Coded with 💙 by Mr. Unity Buddy
+4. **Lives**: You start with 3 lives. Each time you miss an egg, you lose a life. The game ends when you lose all your lives. 
+
+5. **Game Over**: Once all lives are lost, a message will appear displaying your final score.
+
+## Gameplay Controls
+
+- **Left Arrow (←)**: Move the catcher left.
+- **Right Arrow (→)**: Move the catcher right.
+
+## Game Mechanics
+
+- **Eggs**: Eggs randomly fall from the top of the screen. They come in various colors, which are cycled through randomly.
+- **Score**: Each egg you catch increases your score by a fixed amount (10 points). As you catch more eggs, the game becomes harder, with the egg's falling speed and frequency increasing over time.
+- **Lives**: You start with 3 lives. Losing an egg (i.e., the egg falls off the screen) results in the loss of one life. The game ends when no lives are remaining.
+
+## Code Overview
+
+- **Canvas**: The main graphical area where the game elements are drawn.
+- **Catcher**: The arc that the player controls to catch the falling eggs.
+- **Eggs**: These are drawn as ovals, which fall from the top to the bottom of the screen.
+- **Score and Lives**: The current score and remaining lives are displayed in the top corners of the screen.
+- **Game Logic**: The game creates new eggs, moves them down the screen, checks for collisions between the eggs and the catcher, and updates the score and lives accordingly.
+
+## License
+
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+
+---
+
+This `README.md` file provides instructions on how to install, play, and understand the core components of your Egg Catcher game. You can customize it further based on your personal preferences or specific project details.
