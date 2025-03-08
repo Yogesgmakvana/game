@@ -75,6 +75,3 @@ python egg_catcher.py
 
 This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
 
----
-
-This `README.md` file provides instructions on how to install, play, and understand the core components of your Egg Catcher game. You can customize it further based on your personal preferences or specific project details.
